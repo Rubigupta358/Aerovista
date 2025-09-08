@@ -1,1 +1,3 @@
 /build/
+/src/config/
+/src/main/webapp/WEB-INF/config.properties

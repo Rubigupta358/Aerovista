@@ -3,6 +3,7 @@
 <%@ page import="Servlets.dao.ProductDAO" %>   <%-- ✅ added --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="navbar.jsp" %>
+ <%@ include file="chatbot.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>

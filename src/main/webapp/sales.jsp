@@ -3,6 +3,7 @@
 <%@ page import="Servlets.dao.SalesDAO"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="navbar.jsp" %>
+ 
 <!DOCTYPE html>
 <html>
 <head>
@@ -113,7 +114,8 @@
     </div>
   </div>
 </div>
-
+         
 </body>
-</html>
+    
+</html> 
  

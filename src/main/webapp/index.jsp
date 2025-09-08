@@ -1,15 +1,15 @@
- 
-<!DOCTYPE html>
+   
+ <!DOCTYPE html>
 <html>
 <head>
     <title>AeroVista Technologies Dashboard</title>
-    <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
     <div class="container my-5">
         <h1 class="text-center mb-4">Welcome to AeroVista Technologies</h1>
-    <!-- Cards Row -->
+        <!-- Cards Row -->
         <div class="row g-4 justify-content-center">
 
             <!-- Products Card -->
@@ -59,7 +59,7 @@
                     </a>
                 </div>
             </div>
-            
+
             <!-- Insights Card -->
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="card card-module text-center">
@@ -74,5 +74,9 @@
 
         </div>
     </div>
+           
+            
+    
 </body>
 </html>
+ 
