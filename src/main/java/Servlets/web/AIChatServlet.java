@@ -20,7 +20,7 @@ public class AIChatServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        try (InputStream input = getServletContext().getResourceAsStream("/WEB-INF/config.properties")) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             Properties prop = new Properties();
             prop.load(input);
             geminiApiKey = prop.getProperty("GEMINI_API_KEY");
