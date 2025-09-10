@@ -1,11 +1,8 @@
- package Servlets.dao;
+package Servlets.dao;
 
 import Servlets.ConnectDB;
 import Servlets.model.Sale;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 

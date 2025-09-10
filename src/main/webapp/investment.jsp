@@ -3,6 +3,7 @@
 <%@ page import="Servlets.dao.InvestmentDAO"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="navbar.jsp" %>
+<%@ include file="chatbot.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,10 +16,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<div class="container my-5">
+ <div style="max-width:900px; margin:30px auto; display:flex; align-items:center;">
 
-    <!-- Heading -->
-	<h2 class="text-center mb-4">Existing Investments</h2>
+    <!-- Center Heading -->
+    <h2 style="flex:1; text-align:center; margin:0;">Existing Investment</h2>
+
+    <!-- Right Button -->
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal"   >
+        Add Investment
+    </button>
+</div>
+
+<div style="max-width:1300px; margin:0 auto;">
 
     <!-- Existing Investments Table -->
 	<table class="table table-bordered table-striped">
@@ -61,18 +70,13 @@
         </tbody>
 	</table>
 
-    <!-- Add Investment Button -->
-    <div class="text-center my-4">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInvestmentModal">
-            Add Investment
-        </button>
-    </div>
+    
+     
 
-    <div class="mt-3 text-center">
-	    <a href="index.jsp" class="btn btn-secondary">Back to Home</a>
-    </div>
-
+     
 </div>
+
+ 
 
 <!-- Add Investment Modal -->
 <div class="modal fade" id="addInvestmentModal" tabindex="-1" aria-hidden="true">

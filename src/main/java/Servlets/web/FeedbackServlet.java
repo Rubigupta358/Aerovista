@@ -10,6 +10,8 @@ import javax.servlet.http.*;
 
 @WebServlet("/FeedbackServlet")
 public class FeedbackServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
     private FeedbackDAO dao = new FeedbackDAO();
 
     // ✅ POST: Add Feedback
@@ -22,20 +24,14 @@ public class FeedbackServlet extends HttpServlet {
             int rating = Integer.parseInt(request.getParameter("rating"));
             String feedbackText = request.getParameter("feedbackText");
 
-            Feedback f = new Feedback();
-            f.setProductId(productId);
-            f.setFeatureName(featureName);
-            f.setRating(rating);
-            f.setFeedbackText(feedbackText);
-
+            Feedback f = new Feedback(0, productId, featureName, rating, feedbackText);
             dao.addFeedback(f);
 
-            // ✅ Redirect so table refreshes with new + existing data
+            // ✅ redirect to doGet() so updated list shows
             response.sendRedirect("FeedbackServlet");
-
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ServletException("Error while saving feedback", e);
+            throw new ServletException(e);
         }
     }
 
@@ -49,7 +45,7 @@ public class FeedbackServlet extends HttpServlet {
             request.getRequestDispatcher("feedback.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ServletException("Error while fetching feedback list", e);
+            throw new ServletException(e);
         }
     }
 }

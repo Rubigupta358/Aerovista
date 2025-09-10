@@ -12,7 +12,10 @@ public class ConnectDB {
         if (con == null || con.isClosed()) {
             // Load properties file from classpath
             Properties prop = new Properties();
-            try (InputStream input = ConnectDB.class.getClassLoader().getResourceAsStream("config.properties")) {
+            try  (InputStream input = ConnectDB.class.getClassLoader().getResourceAsStream("config.properties")){
+            		System.out.println("DEBUG >> config.properties stream = " + input);
+ 
+            	
                 if (input == null) {
                     throw new RuntimeException("config.properties not found in classpath!");
                 }

@@ -1,4 +1,4 @@
-   
+  <%@ include file="chatbot.jsp" %> 
  <!DOCTYPE html>
 <html>
 <head>
@@ -7,8 +7,15 @@
 
 </head>
 <body>
-    <div class="container my-5">
-        <h1 class="text-center mb-4">Welcome to AeroVista Technologies</h1>
+<div>    <a href="index.jsp">        <img class="mylogo" src="aerovista-logo.png" alt="AeroVista Logo" 
+             style="height:60px; object-fit:contain; display:block;  margin:0 auto 15px auto; background: transparent;    border: none;    mix-blend-mode: multiply;">
+    </a></div>
+    
+    <div class="container my-5 text-center">
+    <h1 class="mb-4">Welcome to AeroVista Technologies</h1>
+</div>
+
+        
         <!-- Cards Row -->
         <div class="row g-4 justify-content-center">
 

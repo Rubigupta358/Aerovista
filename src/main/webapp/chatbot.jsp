@@ -1,8 +1,11 @@
-<!-- chatbot.jsp -->
+ <!-- chatbot.jsp -->
 <!-- This file intentionally has NO directive so it can be included safely -->
 
 <!-- Floating chat button -->
-<button id="chatButton" class="floating-chat" aria-label="Open chat">💬</button>
+<!-- Floating chat button -->
+<button id="chatButton" class="floating-chat" aria-label="Open chat">
+  <img src="chatbotlogo.png" alt="Chatbot" style="width:45px; height:45px;" />
+</button>
 
 <!-- Modal chat window -->
 <div id="chatModal" class="chat-modal">
@@ -21,6 +24,13 @@
 
 <style>
 /* Floating button */
+.floating-chat img {
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
+  mix-blend-mode: multiply; /* background को remove जैसा effect */
+}
+
 .floating-chat {
   position: fixed;
   right: 24px;

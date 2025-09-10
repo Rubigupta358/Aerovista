@@ -3,45 +3,84 @@ package Servlets.web;
 import Servlets.dao.InvestmentDAO;
 import Servlets.model.Investment;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+  
 @WebServlet("/InvestmentServlet")
 public class InvestmentServlet extends HttpServlet {
 
     private InvestmentDAO dao = new InvestmentDAO();
 
-    // ✅ POST: Add Investment
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String contentType = request.getContentType();
+
         try {
-            int productId = Integer.parseInt(request.getParameter("productId"));
-            String month = request.getParameter("month");
-            String investmentType = request.getParameter("investmentType");
-            double amount = Double.parseDouble(request.getParameter("amount"));
-
             Investment inv = new Investment();
-            inv.setProductId(productId);
-            inv.setMonth(month);
-            inv.setInvestmentType(investmentType);
-            inv.setAmount(amount);
 
-            dao.addInvestment(inv);
+            if (contentType != null && contentType.contains("application/json")) {
+                // ✅ JSON request (chatbot)
+                StringBuilder sb = new StringBuilder();
+                try (BufferedReader br = request.getReader()) {
+                    String line;
+                    while ((line = br.readLine()) != null) sb.append(line);
+                }
 
-            // ✅ Redirect so that table refreshes with updated data
-            response.sendRedirect("InvestmentServlet");
+                JsonObject json = JsonParser.parseString(sb.toString()).getAsJsonObject();
+                JsonObject params = json.getAsJsonObject("params");
+
+                inv.setProductId(params.get("productId").getAsInt());
+                inv.setMonth(params.get("month").getAsString());
+                inv.setInvestmentType(params.get("investmentType").getAsString());
+                inv.setAmount(params.get("amount").getAsDouble());
+
+                dao.addInvestment(inv);
+
+                // ✅ JSON Response
+                JsonObject respJson = new JsonObject();
+                respJson.addProperty("status", "success");
+                respJson.addProperty("message", "✅ Investment added successfully!");
+                response.setContentType("application/json");
+                response.getWriter().write(respJson.toString());
+
+            } else {
+                // ✅ Normal HTML form submission
+                inv.setProductId(Integer.parseInt(request.getParameter("productId")));
+                inv.setMonth(request.getParameter("month"));
+                inv.setInvestmentType(request.getParameter("investmentType"));
+                inv.setAmount(Double.parseDouble(request.getParameter("amount")));
+
+                dao.addInvestment(inv);
+
+                // Redirect to updated list
+                response.sendRedirect("InvestmentServlet");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ServletException("Error while saving investment", e);
+            if (contentType != null && contentType.contains("application/json")) {
+                JsonObject respJson = new JsonObject();
+                respJson.addProperty("status", "error");
+                respJson.addProperty("message", e.getMessage());
+                response.setContentType("application/json");
+                response.getWriter().write(respJson.toString());
+            } else {
+                throw new ServletException(e);
+            }
         }
     }
 
-    // ✅ GET: Show all Investments
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -1,4 +1,3 @@
 /build/
-/src/config/
-/src/main/webapp/WEB-INF/config.properties
+/src/main/webapp/WEB-INF/classes/config.properties
 

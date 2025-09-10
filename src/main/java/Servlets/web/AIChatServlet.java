@@ -1,7 +1,13 @@
- package Servlets.web;
+package Servlets.web;
 
+import Servlets.dao.FeedbackDAO;
+import Servlets.dao.InvestmentDAO;
 import Servlets.dao.ProductDAO;
+import Servlets.dao.SalesDAO;
+import Servlets.model.Feedback;
+import Servlets.model.Investment;
 import Servlets.model.Product;
+import Servlets.model.Sale;
 import com.google.gson.*;
 
 import javax.servlet.ServletException;
@@ -82,24 +88,50 @@ public class AIChatServlet extends HttpServlet {
             out.addProperty("reply", (replyText == null || replyText.isEmpty())
                     ? "You can view all products here: <a href='productForm.jsp' target='_blank'>View Products</a>"
                     : replyText + " <a href='productForm.jsp' target='_blank'>View Products</a>");
+        } else if ("add_sales".equalsIgnoreCase(intent)) {
+            processAddSaleaFlow(session, params, replyText, complete, out);
+        } else if ("view_sales".equalsIgnoreCase(intent)) {
+            out.addProperty("reply", (replyText == null || replyText.isEmpty())
+                    ? "You can view all sales here: <a href='sales.jsp' target='_blank'>View Sales</a>"
+                    : replyText + " <a href='sales.jsp' target='_blank'>View Sales</a>");
+        }else if ("add_investment".equalsIgnoreCase(intent)) {
+        	processAddInvestmentFlow(session, params, replyText, complete, out);
+        } else if ("view_investment".equalsIgnoreCase(intent)) {
+            out.addProperty("reply", (replyText == null || replyText.isEmpty())
+                    ? "You can view all investment here: <a href='investment.jsp' target='_blank'>View Investment</a>"
+                    : replyText + " <a href='investment.jsp' target='_blank'>View Investment</a>");
+        } else if ("add_feedback".equalsIgnoreCase(intent)) {
+
+        	processAddFeedbackFlow(session, params, replyText, complete, out);
+        } else if ("view_feedback".equalsIgnoreCase(intent)) {
+            out.addProperty("reply", (replyText == null || replyText.isEmpty())
+                    ? "You can view all feedback here: <a href='feedback.jsp' target='_blank'>View feedback</a>"
+                    : replyText + " <a href='feedback.jsp' target='_blank'>View feedback</a>");
         } else {
-            out.addProperty("reply", (replyText != null && !replyText.isEmpty()) ? replyText : "I can help with 'add product' and 'view product'.");
+            out.addProperty("reply", (replyText != null && !replyText.isEmpty())
+                    ? replyText
+                    : "I can help with 'add product', 'view product', 'add sales', 'view sales','add investment','view investment','add feedback' and 'view feedback'.");
         }
 
         response.getWriter().write(out.toString());
     }
 
     private String buildJsonOnlyPrompt(String userMessage) {
-        String system = "You are an assistant that MUST reply with ONLY valid JSON (no surrounding text). " +
-                "Valid JSON structure: " +
-                "{\"intent\":\"<one of: add_product, view_product, fallback>\", " +
-                "\"reply_text\":\"<text to show to user (may contain HTML links)>\", " +
-                "\"params\":{...}, \"complete\":<true|false> }.\n\n" +
-                "If user intent is add_product, try to extract as many fields as possible from user's message into params. " +
-                "Allowed params: name (string), category (string), price (number), launch_date (yyyy-mm-dd). " +
-                "Set complete=true only when all four fields are present and valid. " +
-                "If some fields are missing, set complete=false and in reply_text clearly request the missing fields (comma separated). " +
-                "Do not add any explanation outside the JSON. ";
+    	String system = "You are an assistant that MUST reply with ONLY valid JSON (no surrounding text). " +
+    		    "Valid JSON structure: " +
+    		    "{\"intent\":\"<one of: add_product, view_product, add_sales, view_sales, add_investment, view_investment, add_feedback, view_feedback, fallback>\", " +
+    		    "\"reply_text\":\"<text to show to user>\", " +
+    		    "\"params\":{...}, \"complete\":<true|false> }.\n\n" +
+
+    		    "For add_product: params = name, category, price, launch_date (yyyy-mm-dd).\n" +
+    		    "For add_sales: params = product_id (number), quantity (number), revenue (number), sale_date (yyyy-mm-dd).\n" +
+    		    "For add_investment: params = product_id (number), month, investment_type, amount.\n" +
+    		    "For add_feedback: params = product_id (number), feature_name (string), rating (number), feedback_text (string).\n" +
+
+    		    "Set complete=true only when all required fields are present and valid. " +
+    		    "If fields missing, set complete=false and in reply_text clearly request missing fields. " +
+    		    "Do not add any explanation outside the JSON.";
+
         return system + "\n\nUser: " + userMessage;
     }
 
@@ -171,7 +203,8 @@ public class AIChatServlet extends HttpServlet {
         throw new JsonParseException("Could not parse Gemini JSON");
     }
 
-    private void processAddProductFlow(HttpSession session, JsonObject params, String modelReplyText, boolean modelSaysComplete, JsonObject out) {
+    private void processAddProductFlow(HttpSession session, JsonObject params, String modelReplyText,
+                                       boolean modelSaysComplete, JsonObject out) {
         Product temp = (Product) session.getAttribute("tempProduct");
         if (temp == null) {
             temp = new Product();
@@ -218,4 +251,194 @@ public class AIChatServlet extends HttpServlet {
             }
         }
     }
+
+    
+    private void processAddSaleaFlow(HttpSession session, JsonObject params, String modelReplyText,
+            boolean modelSaysComplete, JsonObject out) {
+Sale temp = (Sale) session.getAttribute("tempSale");
+if (temp == null) {
+temp = new Sale();
+session.setAttribute("tempSale", temp);
 }
+
+if (params != null) {
+if (params.has("product_id") && !params.get("product_id").isJsonNull()) temp.setProductId(params.get("product_id").getAsInt());
+if (params.has("quantity") && !params.get("quantity").isJsonNull()) temp.setQuantity(params.get("quantity").getAsInt());
+if (params.has("revenue") && !params.get("revenue").isJsonNull()) {
+try { temp.setRevenue(params.get("revenue").getAsDouble()); } catch (Exception ignored) {}
+}
+if (params.has("sale_date") && !params.get("sale_date").isJsonNull()) {
+try { temp.setSaleDate(java.sql.Date.valueOf(params.get("sale_date").getAsString().trim())); } catch (Exception ignored) {}
+}
+}
+    
+    
+    
+        StringBuilder missing = new StringBuilder();
+        if (temp.getProductId() <= 0) missing.append("product_id, ");
+        if (temp.getQuantity() <= 0) missing.append("quantity, ");
+        if (temp.getRevenue() <= 0) missing.append("revenue, ");
+        if (temp.getSaleDate() == null) missing.append("sale_date, ");
+        
+         
+
+        
+        if (missing.length() > 0) {
+            out.addProperty("reply", (modelReplyText != null && !modelReplyText.trim().isEmpty())
+                    ? modelReplyText
+                    : "Please provide these fields: " + missing.toString().replaceAll(", $", ""));
+            out.addProperty("complete", false);
+            session.setAttribute("tempSale", temp);
+        } else {
+            try {
+                new SalesDAO().addSale(temp);
+                String success = "✅ Sale added successfully! Product ID: \" + temp.getProductId()"
+                		+ ", Quantity: " + temp.getQuantity()
+                        + ", Revenue: " + temp.getRevenue()
+                        + ", Sale Date: " + temp.getSaleDate();
+                out.addProperty("reply", success);
+                out.addProperty("complete", true);
+                session.removeAttribute("tempSale");
+            }  catch (Exception ex) {
+                ex.printStackTrace();
+                out.addProperty("reply", "⚠️ Unable to save sale. Please try again later.");
+                out.addProperty("complete", false);
+            }
+        }
+    } 
+			        
+				    private void processAddInvestmentFlow(HttpSession session, JsonObject params, String modelReplyText,
+				            boolean modelSaysComplete, JsonObject out) {
+				Investment temp = (Investment) session.getAttribute("tempInvestment");
+				if (temp == null) {
+				temp = new Investment();
+				session.setAttribute("tempInvestment", temp);
+				}
+				
+				if (params != null) {
+				if (params.has("product_id") && !params.get("product_id").isJsonNull()) {
+				temp.setProductId(params.get("product_id").getAsInt());
+				}
+				if (params.has("month") && !params.get("month").isJsonNull()) {
+				temp.setMonth(params.get("month").getAsString().trim());
+				}
+				if (params.has("investment_type") && !params.get("investment_type").isJsonNull()) {
+				temp.setInvestmentType(params.get("investment_type").getAsString().trim());
+				}
+				if (params.has("amount") && !params.get("amount").isJsonNull()) {
+				try { temp.setAmount(params.get("amount").getAsDouble()); } catch (Exception ignored) {}
+				}
+				}
+				
+				StringBuilder missing = new StringBuilder();
+				if (temp.getProductId() <= 0) missing.append("product_id, ");
+				if (temp.getMonth() == null || temp.getMonth().trim().isEmpty()) missing.append("month, ");
+				if (temp.getInvestmentType() == null || temp.getInvestmentType().trim().isEmpty()) missing.append("investment_type, ");
+				if (temp.getAmount() <= 0) missing.append("amount, ");
+				
+				if (missing.length() > 0) {
+				out.addProperty("reply", (modelReplyText != null && !modelReplyText.trim().isEmpty())
+				? modelReplyText
+				: "Please provide these fields: " + missing.toString().replaceAll(", $", ""));
+				out.addProperty("complete", false);
+				session.setAttribute("tempInvestment", temp);
+				} else {
+				try {
+				new InvestmentDAO().addInvestment(temp);
+				String success = "✅ Investment added successfully! Product ID: " + temp.getProductId()
+				+ ", Month: " + temp.getMonth()
+				+ ", Investment Type: " + temp.getInvestmentType()
+				+ ", Amount: " + temp.getAmount();
+				out.addProperty("reply", success);
+				out.addProperty("complete", true);
+				
+				// Send new record to frontend for instant table update
+				out.add("newInvestment", new Gson().toJsonTree(temp));
+				
+				session.removeAttribute("tempInvestment");
+				} catch (Exception ex) {
+				ex.printStackTrace();
+				out.addProperty("reply", "⚠️ Unable to save investment. Please try again later.");
+				out.addProperty("complete", false);
+				}
+				}
+				}
+				
+				    
+    
+    private void processAddFeedbackFlow(HttpSession session, JsonObject params, String modelReplyText,
+            boolean modelSaysComplete, JsonObject out) {
+
+        // Retrieve or create temp Feedback object
+        Feedback temp = (Feedback) session.getAttribute("tempFeedback");
+        
+        if (temp == null) {
+            temp = new Feedback();
+            session.setAttribute("tempFeedback", temp);
+            System.out.println("Here is temp " + temp.toString());
+        }
+
+    	//System.out.println("Product ID :" +temp.getProductId() +"feature :" + temp.getFeatureName()+ "Rating:" +temp.getRating()+ "temp:" +temp.getFeedbackText());
+        System.out.println("printing params line 382"+params.toString());
+
+        // Update temp with incoming params
+        if (params != null) {
+            if (params.has("product_id") && !params.get("product_id").isJsonNull()) {
+            	System.out.println("Param - Product ID"+params.get("product_id").getAsInt());
+                temp.setProductId(params.get("product_id").getAsInt());
+            }
+            if (params.has("feature_name") && !params.get("feature_name").isJsonNull()) {
+            	System.out.println("Param - Feature: "+params.get("feature_name").toString());
+            	temp.setFeatureName(params.get("feature_name").getAsString().trim()); // ✅ changed
+            }
+            if (params.has("rating") && !params.get("rating").isJsonNull()) {
+            	System.out.println("Param - Rating: "+params.get("rating").getAsInt());
+                temp.setRating(params.get("rating").getAsInt());
+            }
+            if (params.has("feedback_text") && !params.get("feedback_text").isJsonNull()) {
+            	System.out.println("Param - Feedback: "+params.get("feedback_text").getAsString().trim());
+                temp.setFeedbackText(params.get("feedback_text").getAsString().trim()); // ✅ changed
+            }
+        }
+
+    	System.out.println("HERE------------FEEDBACK-395");
+        // Check for missing fields
+        StringBuilder missing = new StringBuilder();
+        if (temp.getProductId() <= 0) missing.append("product_id, ");
+        if (temp.getFeatureName() == null || temp.getFeatureName().trim().isEmpty()) missing.append("Feature, ");
+        if (temp.getRating() <= 0) missing.append("Rating, ");
+        if (temp.getFeedbackText() == null || temp.getFeedbackText().trim().isEmpty()) missing.append("feedback, ");
+    // Respond based on completeness
+        if (missing.length() > 0) {
+            out.addProperty("reply", (modelReplyText != null && !modelReplyText.trim().isEmpty())
+                ? modelReplyText
+                : "Please provide these fields: " + missing.toString().replaceAll(", $", ""));
+            out.addProperty("complete", false);
+            session.setAttribute("tempFeedback", temp);
+
+        	System.out.println("Inside IF HERE------------FEEDBACK-412");
+        } else {
+            try {
+            	System.out.println("----------Trying to save-------------");
+                new FeedbackDAO().addFeedback(temp);  // Save to DB
+                System.out.println("-------------After saving--------------");
+                String success = "✅ Record added successfully! "
+                    + "Product ID: " + temp.getProductId()
+                    + ", Feature: " + temp.getFeatureName()
+                    + ", Rating: " + temp.getRating()
+                    + ", Feedback: " + temp.getFeedbackText();
+                out.addProperty("reply", success);
+                out.addProperty("complete", true);
+                session.removeAttribute("tempFeedback");
+
+            	System.out.println("Inside else HERE------------FEEDBACK-4277");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                out.addProperty("reply", "⚠️ Unable to save record. Please try again later.");
+                out.addProperty("complete", false);
+            }
+        }
+    }
+
+}
+ 

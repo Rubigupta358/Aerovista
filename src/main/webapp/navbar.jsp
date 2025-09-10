@@ -5,7 +5,7 @@
     <!-- Logo -->
     <a class="navbar-brand" href="index.jsp">
       <img src="aerovista-logo.png" alt="AeroVista Logo" 
-           style="height:40px; margin-right:10px;">
+           style="height:40px; margin-right:10px; background: transparent;    border: none;    mix-blend-mode: multiply;">
     </a>
 
     <!-- Navigation links -->

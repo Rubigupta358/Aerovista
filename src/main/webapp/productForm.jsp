@@ -1,9 +1,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="Servlets.model.Product" %>
-<%@ page import="Servlets.dao.ProductDAO" %>   <%-- ✅ added --%>
+<%@ page import="Servlets.dao.ProductDAO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="navbar.jsp" %>
- <%@ include file="chatbot.jsp" %>
+<%@ include file="chatbot.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,14 +17,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head> 
 <body>
-<div class="container my-5">
 
-    <!-- Heading -->
-    <h2 class="text-center mb-4">Existing Products</h2>
+<!-- Heading + Add Product Button -->
+ <div style="max-width:900px; margin:30px auto; display:flex; align-items:center;">
 
-    <!-- Existing Products Table -->
-    <table class="table table-bordered table-striped"  >
-        <thead class="table-dark" >
+    <!-- Center Heading -->
+    <h2 style="flex:1; text-align:center; margin:0;">Existing Products</h2>
+
+    <!-- Right Button -->
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal"   >
+        Add Product
+    </button>
+</div>
+<!-- Existing Products Table -->
+<div style="max-width:1300px; margin:0 auto;">
+    <table class="table table-bordered table-striped text-center">
+        <thead class="table-dark">
             <tr>
                 <th>ID</th>
                 <th>Name</th>
@@ -35,7 +43,6 @@
         </thead>
         <tbody>
             <%
-                // ✅ fallback: agar servlet se products null aaye
                 List<Product> products = (List<Product>) request.getAttribute("products");
                 if (products == null) {
                     Servlets.dao.ProductDAO dao = new Servlets.dao.ProductDAO();
@@ -62,17 +69,6 @@
             <% } %>
         </tbody>
     </table>
-
-    <!-- Add Product Button -->
-    <div class="text-center my-4">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-            Add Product
-        </button>
-    </div>
-    <div class="mt-3 text-center">
-	    <a href="index.jsp" class="btn btn-secondary">Back to Home</a>
-    </div>
-
 </div>
 
 <!-- Add Product Modal -->

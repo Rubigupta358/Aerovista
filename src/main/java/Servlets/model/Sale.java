@@ -19,7 +19,6 @@ public class Sale {
         this.saleDate = saleDate;
     }
 
-    // Getters and Setters
     public int getSaleId() { return saleId; }
     public void setSaleId(int saleId) { this.saleId = saleId; }
 
