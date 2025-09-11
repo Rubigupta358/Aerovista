@@ -4,7 +4,7 @@
 <!-- Floating chat button -->
 <!-- Floating chat button -->
 <button id="chatButton" class="floating-chat" aria-label="Open chat">
-  <img src="chatbotlogo.png" alt="Chatbot" style="width:45px; height:45px;" />
+  <img src="chatbotlogo.png" alt="Chatbot" style="width:45px; height:45px;  "/>
 </button>
 
 <!-- Modal chat window -->
@@ -38,9 +38,9 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  border: none;
+  border: 1px solid black;
   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  background: #007bff;
+  background:  white;
   color: #fff;
   font-size: 28px;
   display: flex;
@@ -170,6 +170,8 @@
   msgInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
 
   // initial greeting
-  appendMessage('Bot', "Hi! I can help with: 'add product' or 'view product'. For add, give name/category/price/launch_date or I'll ask the missing fields.");
+appendMessage('Bot', "Hi! I can help you add or view different records like products, sales, feedback, and more. Just type what you want to do!");
+
+  //appendMessage('Bot', "Hi! I can help with: 'add product' or 'view product'. For add, give name/category/price/launch_date or I'll ask the missing fields.");
 })();
 </script>

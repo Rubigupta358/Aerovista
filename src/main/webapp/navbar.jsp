@@ -15,8 +15,9 @@
         <li class="nav-item"><a class="nav-link" href="productForm.jsp">Products</a></li>
         <li class="nav-item"><a class="nav-link" href="sales.jsp">Sales</a></li>
         <li class="nav-item"><a class="nav-link" href="investment.jsp">Investment</a></li>
+          <li class="nav-item"><a class="nav-link" href="feedback.jsp">Feedback</a></li>
         <li class="nav-item"><a class="nav-link" href="bi.jsp">Insights</a></li>
-        <li class="nav-item"><a class="nav-link" href="feedback.jsp">Feedback</a></li>
+       
             
       </ul>
     </div>

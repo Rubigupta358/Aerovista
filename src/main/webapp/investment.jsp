@@ -1,4 +1,4 @@
- <%@ page import="java.util.List"%>
+<%@ page import="java.util.List"%>
 <%@ page import="Servlets.model.Investment"%>
 <%@ page import="Servlets.dao.InvestmentDAO"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
