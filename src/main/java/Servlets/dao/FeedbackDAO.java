@@ -10,7 +10,7 @@ public class FeedbackDAO {
 
     public void addFeedback(Feedback f) throws Exception {
         Connection conn = ConnectDB.getConnectDB();
-        String sql = "INSERT INTO survey(product_id, feature_name, rating, feedback_text) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO Survey(product_id, feature_name, rating, feedback_text) VALUES(?,?,?,?)";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, f.getProductId());
         ps.setString(2, f.getFeatureName());
@@ -23,7 +23,7 @@ public class FeedbackDAO {
 
     public List<Feedback> getAllFeedbacks() throws Exception {
         Connection conn = ConnectDB.getConnectDB();
-        String sql = "SELECT * FROM survey";
+        String sql = "SELECT * FROM Survey";
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         List<Feedback> list = new ArrayList<>();
