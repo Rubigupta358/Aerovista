@@ -24,15 +24,18 @@ public class ConnectDB {
 
             String DB_USER = prop.getProperty("DB_USER");
             String DB_PASSWORD = prop.getProperty("DB_PASSWORD");
+            String DB_EndPoint= prop.getProperty("DB_EndPoint");
+            String DB_DataBase= prop.getProperty("DB_DataBase");
 
             // Load JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Connect
             con = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/company_project",
+                "jdbc:mysql://"+DB_EndPoint+":3306/"+ DB_DataBase,
                 DB_USER,
                 DB_PASSWORD
+                 
             );
         }
         return con;
