@@ -24,18 +24,17 @@ public class ConnectDB {
 
             String DB_USER = prop.getProperty("DB_USER");
             String DB_PASSWORD = prop.getProperty("DB_PASSWORD");
-            String DB_EndPoint= prop.getProperty("DB_EndPoint");
-            String DB_DataBase= prop.getProperty("DB_DataBase");
+            String DB_ENDPOINT = prop.getProperty("DB_ENDPOINT");
+            String DB_DATABASE = prop.getProperty("DB_DATABASE");
 
             // Load JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Connect
             con = DriverManager.getConnection(
-                "jdbc:mysql://"+DB_EndPoint+":3306/"+ DB_DataBase,
+                "jdbc:mysql://" + DB_ENDPOINT + ":3306/" + DB_DATABASE,
                 DB_USER,
                 DB_PASSWORD
-                 
             );
         }
         return con;
