@@ -1,4 +1,4 @@
-CREATE DATABASE AeroVista_project;
+CREATE DATABASE IF NOT EXISTS AeroVista_project;
 USE AeroVista_project;
 
 -- Table 1: Products
